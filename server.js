@@ -10,7 +10,12 @@ const port = process.env.PORT || 8080;
 const connectionString = process.env.MONGO_CONNECTION_STRING || 'mongodb://localhost/todo';
 
 // configuration ===============================================================
-mongoose.connect(connectionString);
+mongoose.connect(connectionString, {
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  useFindAndModify: false,
+  useUnifiedTopology: true
+});
 
 const app = express();
 
