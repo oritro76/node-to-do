@@ -28,6 +28,10 @@ describe("todo app", () => {
         .should('have.css', 'background-color', 'rgb(91, 192, 222)')
     })
     
+})
+
+
+describe('Add to-dos and remove to-dos', () => {
     it('adding one or more todos will display the todos and the count of todos', () => {
         cy.fixture('to-dos').then(testdata => {
             let count = testdata.length
@@ -43,6 +47,30 @@ describe("todo app", () => {
             .contains(count)
 
         })
+    })
+
+    it('checking on to-dos remove the to-dos', () => {
+        cy.intercept(
+            {
+                "method": "DELETE",
+            }
+        ).as('delete')
+        
+        cy.get('input[type="checkbox"]').then(($list) => {
+            let count = $list.length
+            cy.log(count)
+            for(let i = 0; i < count; i++){
+                cy.get('input[type="checkbox"]').first().check()
+                cy.wait('@delete')
+            }
+        })
+    })            
+})
+
+describe("Visiting any other page returns 404", () => {
+
+    it("Visiting any other page returns 404", () => {
+        cy.request({url:'/home', failOnStatusCode: false,}).its('status' ).should('be.equal', 404)
     })
 
     
