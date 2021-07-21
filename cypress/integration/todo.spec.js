@@ -16,13 +16,11 @@ describe("todo app", () => {
     })
 
     it('has one button with text Add', () => {
-        cy.get('button')
-        .contains('Add')
+        cy.get('button').contains('Add')
     })
 
     it('has one label with 0 when no to do is added', () => {
-        cy.get('.label')
-        .contains('0')
+        cy.get('.label').contains('0')
 
         cy.get('.label-info')
         .should('have.css', 'background-color', 'rgb(91, 192, 222)')
@@ -43,8 +41,7 @@ describe('Add to-dos and remove to-dos', () => {
                 
             })
             
-            cy.get('.label')
-            .contains(count)
+            cy.get('.label').contains(count)
 
         })
     })
@@ -63,6 +60,8 @@ describe('Add to-dos and remove to-dos', () => {
                 cy.wait('@delete')
             }
         })
+
+        cy.get('.label').contains(count)
     })            
 })
 
