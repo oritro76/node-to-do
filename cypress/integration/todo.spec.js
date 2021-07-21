@@ -58,8 +58,7 @@ describe('Add to-dos and remove to-dos', () => {
         
         cy.get('input[type="checkbox"]').then(($list) => {
             let count = $list.length
-            cy.log(count)
-            for(let i = 0; i < count; i++){
+            for(let temp = 0; temp < count; i++){
                 cy.get('input[type="checkbox"]').first().check()
                 cy.wait('@delete')
             }
