@@ -1,5 +1,5 @@
 {
-  "name": "node-todo",
+  "name": "todo",
   "version": "0.0.1",
   "description": "Simple todo application.",
   "main": "server.js",
@@ -13,5 +13,14 @@
     "method-override": "^3.0.0",
     "mongoose": "^5.12.11",
     "morgan": "^1.1.1"
-  }
+  },
+  "devDependencies": {
+    "cypress": "^8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com-oritro76:fashioncloud/node-todo.git"
+  },
+  "keywords": [],
+  "license": "ISC"
 }
