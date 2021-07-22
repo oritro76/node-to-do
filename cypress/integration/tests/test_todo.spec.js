@@ -48,20 +48,30 @@ describe("todo app", () => {
 })
 
 
-describe('Add to-dos and remove to-dos', () => {
-    beforeEach(() => {{
-        toDoUtils.interceptDeleteTodosAPI()
+describe('Add to-dos', () => {
+    let todoIDS = []
+    
+    beforeEach(() => {
+        toDoUtils.interceptCreateTodosAPI()
         
         cy.fixture('to-dos').as('testdata')
 
         cy.visit("/")
-    }})
+    })
 
     it('adding one or more todos will display the todos and the count of todos', () => {
         cy.get('@testdata').then(testdata => {
             testdata.forEach((toDo) => {
                 toDoPage.getInputForm().clear().type(toDo)
+
                 toDoPage.getAddButton().contains('Add').click()
+
+                cy.wait('@createToDosAPI').then((interception) => {
+                    let response = interception.response.body
+                    todoIDS.push(response[0]['_id'])
+                })
+
+                
 
                 toDoPage.getToDoTextLabel().contains(toDo)
                 
@@ -74,6 +84,30 @@ describe('Add to-dos and remove to-dos', () => {
         })
     })
 
+    afterEach(() => {
+        todoIDS.forEach((id) => {
+            toDoUtils.deleteTodoWithAPI(id)
+        })
+    })
+
+})
+
+describe('remove to-dos', () => {
+
+    beforeEach(() => {{
+        toDoUtils.interceptDeleteTodosAPI()
+        
+        cy.fixture('to-dos').as('testdata')
+        
+        cy.get('@testdata').then(testdata => {
+            testdata.forEach((toDoText) => {
+                toDoUtils.createTodoWithAPI(toDoText)
+            })
+        })        
+        
+        cy.visit("/")
+    }})
+
     it('checking on to-dos remove the to-dos', () => {
         toDoPage.getToDoCheckbox().then(($list) => {
             let temp = $list.length -1
@@ -84,8 +118,9 @@ describe('Add to-dos and remove to-dos', () => {
             }
         })
 
-    })            
+    })
 })
+
 
 describe("Visiting any other page returns 404", () => {
     it("Visiting any other page returns 404", () => {
