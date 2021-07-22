@@ -8,14 +8,11 @@ import {
 } from '../constants/constants'
 
 import * as toDoPage from '../pages/page_todo'
+import * as toDoUtils from '../utils/utils'
 
 describe("todo app", () => {
     beforeEach(() => {
-        cy.intercept(
-            {
-                "method": "GET",
-            }
-        ).as('get')
+        toDoUtils.interceptGetTodosAPI()
 
         cy.visit("/")
         
@@ -36,7 +33,7 @@ describe("todo app", () => {
     })
 
     it('check correct number of todos are displayed', () => {
-        cy.wait('@get')
+        cy.wait('@getToDosAPI')
         
         toDoPage.getToDoCountLabel()
         .should('have.css', 'background-color', LABEL_COLOR)
@@ -53,11 +50,7 @@ describe("todo app", () => {
 
 describe('Add to-dos and remove to-dos', () => {
     beforeEach(() => {{
-        cy.intercept(
-            {
-                "method": "DELETE",
-            }
-        ).as('delete')
+        toDoUtils.interceptDeleteTodosAPI()
         
         cy.fixture('to-dos').as('testdata')
 
@@ -86,7 +79,7 @@ describe('Add to-dos and remove to-dos', () => {
             let temp = $list.length -1
             for(let count = temp; count >= 0; count--){
                 toDoPage.getToDoCheckbox().first().check()
-                cy.wait('@delete')
+                cy.wait('@deleteToDosAPI')
                 toDoPage.getToDoCountLabel().contains(count)
             }
         })
