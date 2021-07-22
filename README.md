@@ -11,13 +11,13 @@ Node provides the RESTful API. Angular provides the frontend and accesses the AP
 
 ## Installation
 
-1. Clone the repository: `git clone git@github.com:fashioncloud/node-todo.git`
+1. Clone the repository: `gh repo clone oritro76/node-to-do
 2. Install the application: `npm install`
 3. Start the server: `npm start`
 4. View in browser at `http://localhost:8080`
 
 ## Run Tests
-1. npm test
+1. Run test: `npm test`
 
 
-*** Improved the test cases and performance in improvement branch.
+*** Improved the test cases and performance are in improvement branch.
