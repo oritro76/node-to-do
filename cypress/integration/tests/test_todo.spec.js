@@ -1,4 +1,4 @@
-/// <referrence types="Cypress" />
+/// <reference types="Cypress" />
 
 import {
     HEADER,
@@ -7,6 +7,8 @@ import {
     LABEL_COLOR
 } from '../constants/constants'
 
+import * as toDoPage from '../pages/page_todo'
+
 describe("todo app", () => {
     beforeEach(() => {
         cy.intercept(
@@ -14,28 +16,29 @@ describe("todo app", () => {
                 "method": "GET",
             }
         ).as('get')
-        
+
         cy.visit("/")
         
     })
     it("has one header with text Simple ToDo List", () => {
-        cy.get('h1').contains(HEADER)
+        toDoPage.getHeader().contains(HEADER)
     })
 
     it('has one input form for adding todo text', () => {
-        cy.get('.form-control')
+        toDoPage.getInputForm()
         .should('have.attr', 'type', 'text')
         .and('have.attr', 'placeholder', TODO_INPUT_PLACEHOLDER)
         .and('have.class', 'text-center')
     })
 
     it('has one button with text Add', () => {
-        cy.get('button').contains(BUTTON_TEXT)
+        toDoPage.getAddButton().contains(BUTTON_TEXT)
     })
 
     it('check correct number of todos are displayed', () => {
         cy.wait('@get')
-        cy.get('.label-info')
+        
+        toDoPage.getToDoCountLabel()
         .should('have.css', 'background-color', LABEL_COLOR)
         .then( () => {
             let el = Cypress.$("input:checkbox")
@@ -64,27 +67,27 @@ describe('Add to-dos and remove to-dos', () => {
     it('adding one or more todos will display the todos and the count of todos', () => {
         cy.get('@testdata').then(testdata => {
             testdata.forEach((toDo) => {
-                cy.get('.form-control').clear().type(toDo)
-                cy.get('.btn').contains('Add').click()
+                toDoPage.getInputForm().clear().type(toDo)
+                toDoPage.getAddButton().contains('Add').click()
 
-                cy.get('.checkbox').contains(toDo)
+                toDoPage.getToDoTextLabel().contains(toDo)
                 
             })
 
-            cy.get('input[type="checkbox"]').then(($list) => {
+            toDoPage.getToDoCheckbox().then(($list) => {
                 let count = $list.length
-                cy.get('.label').contains(count)
+                toDoPage.getToDoCountLabel().contains(count)
             })
         })
     })
 
     it('checking on to-dos remove the to-dos', () => {
-        cy.get('input[type="checkbox"]').then(($list) => {
+        toDoPage.getToDoCheckbox().then(($list) => {
             let temp = $list.length -1
             for(let count = temp; count >= 0; count--){
-                cy.get('input[type="checkbox"]').first().check()
+                toDoPage.getToDoCheckbox().first().check()
                 cy.wait('@delete')
-                cy.get('.label').contains(count)
+                toDoPage.getToDoCountLabel().contains(count)
             }
         })
 
