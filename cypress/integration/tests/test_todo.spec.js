@@ -1,4 +1,4 @@
-///<referrence types="Cypress" />
+/// <referrence types="Cypress" />
 
 import {
     HEADER,
@@ -7,16 +7,16 @@ import {
     LABEL_COLOR
 } from '../constants/constants'
 
-const Todo = require('../../../app/models/todo');
-
 describe("todo app", () => {
     beforeEach(() => {
-        cy.visit("/")
         cy.intercept(
             {
                 "method": "GET",
             }
         ).as('get')
+        
+        cy.visit("/")
+        
     })
     it("has one header with text Simple ToDo List", () => {
         cy.get('h1').contains(HEADER)
@@ -39,7 +39,6 @@ describe("todo app", () => {
         .should('have.css', 'background-color', LABEL_COLOR)
         .then( () => {
             let el = Cypress.$("input:checkbox")
-            console.log(el)
             let count = el.length
             cy.get('.label').contains(count)
         })
@@ -89,15 +88,11 @@ describe('Add to-dos and remove to-dos', () => {
             }
         })
 
-        
     })            
 })
 
 describe("Visiting any other page returns 404", () => {
-
     it("Visiting any other page returns 404", () => {
         cy.request({url:'/home', failOnStatusCode: false,}).its('status' ).should('be.equal', 404)
     })
-
-    
 })
