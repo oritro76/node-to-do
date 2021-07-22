@@ -15,3 +15,9 @@ Node provides the RESTful API. Angular provides the frontend and accesses the AP
 2. Install the application: `npm install`
 3. Start the server: `npm start`
 4. View in browser at `http://localhost:8080`
+
+## Run Tests
+1. npm test
+
+
+*** Improved the test cases and performance in improvement branch.
