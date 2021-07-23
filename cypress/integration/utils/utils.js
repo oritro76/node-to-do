@@ -1,13 +1,9 @@
 /// <reference types="Cypress" />
 
 export function interceptGetTodosAPI(){
-    cy.intercept(
-        {
-            "method": "GET",
-            "hostname": Cypress.config('host'),
-            "path": "/api/todos"
-        }
-    ).as('getToDosAPI')
+    cy.intercept("GET", "/api/todos", req => {
+            delete req.headers['if-none-match']
+        }).as('getToDosAPI')
 }
 
 export function interceptCreateTodosAPI(){

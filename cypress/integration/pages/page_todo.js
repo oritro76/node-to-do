@@ -16,10 +16,10 @@ export function getToDoCountLabel(){
     return cy.get('.label-info')
 }
 
-export function getToDoCheckbox(){
+export function getToDoCheckboxes(){
     return cy.get('input[type="checkbox"]')
 }
 
-export function getToDoTextLabel(){
+export function getToDoTextLabels(){
     return cy.get('.checkbox')
 }

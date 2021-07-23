@@ -1,35 +1,28 @@
 /// <reference types="Cypress" />
 
-import {
-    HEADER,
-    TODO_INPUT_PLACEHOLDER,
-    BUTTON_TEXT,
-    LABEL_COLOR
-} from '../constants/constants'
-
+import * as constants from '../constants/constants'
 import * as toDoPage from '../pages/page_todo'
 import * as toDoUtils from '../utils/utils'
 
 describe("todo app", () => {
     beforeEach(() => {
         toDoUtils.interceptGetTodosAPI()
-
         cy.visit("/")
         
     })
     it("has one header with text Simple ToDo List", () => {
-        toDoPage.getHeader().contains(HEADER)
+        toDoPage.getHeader().contains(constants.HEADER_TEXT)
     })
 
     it('has one input form for adding todo text', () => {
         toDoPage.getTodoTextInputForm()
         .should('have.attr', 'type', 'text')
-        .and('have.attr', 'placeholder', TODO_INPUT_PLACEHOLDER)
+        .and('have.attr', 'placeholder', constants.TODO_INPUT_PLACEHOLDER_TEXT)
         .and('have.class', 'text-center')
     })
 
     it('has one button with text Add', () => {
-        toDoPage.getAddButton().contains(BUTTON_TEXT)
+        toDoPage.getAddButton().contains(constants.BUTTON_TEXT)
     })
 
     it('check correct number of todos are displayed', () => {
@@ -38,7 +31,7 @@ describe("todo app", () => {
             return response.length
         }).then(count => {
             toDoPage.getToDoCountLabel()
-            .should('have.css', 'background-color', LABEL_COLOR)
+            .should('have.css', 'background-color', constants.LABEL_COLOR)
             .and('contain', count)
         })
     })
@@ -62,18 +55,18 @@ describe('Add to-dos', () => {
             testdata.forEach(toDo => {
                 toDoPage.getTodoTextInputForm().clear().type(toDo)
 
-                toDoPage.getAddButton().contains('Add').click()
+                toDoPage.getAddButton().contains(constants.BUTTON_TEXT).click()
 
                 cy.wait('@createToDosAPI').then((interception) => {
                     let response = interception.response.body
                     todoIDS.push(response[0]['_id'])
                 })
 
-                toDoPage.getToDoTextLabel().contains(toDo)
+                toDoPage.getToDoTextLabels().contains(toDo)
                 
             })
 
-            toDoPage.getToDoCheckbox().then(($list) => {
+            toDoPage.getToDoCheckboxes().then(($list) => {
                 let count = $list.length
                 toDoPage.getToDoCountLabel().contains(count)
             })
@@ -105,11 +98,14 @@ describe('remove to-dos', () => {
     }})
 
     it('checking on to-do checkboxes remove the to-dos', () => {
-        toDoPage.getToDoCheckbox().then(($list) => {
+        toDoPage.getToDoTextLabels().then(($list) => {
             let temp = $list.length -1
             for(let count = temp; count >= 0; count--){
-                toDoPage.getToDoCheckbox().first().check()
-                cy.wait('@deleteToDosAPI')
+                toDoPage.getToDoCheckboxes().first().check()
+                cy.wait('@deleteToDosAPI').then(interception => {
+                    let response = interception.response
+                    expect(response.statusCode).to.equal(200)
+                })
                 toDoPage.getToDoCountLabel().contains(count)
             }
         })
