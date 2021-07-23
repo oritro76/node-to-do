@@ -4,7 +4,7 @@ export function getHeader(){
     return cy.get('h1')
 }
 
-export function getInputForm(){
+export function getTodoTextInputForm(){
     return cy.get('.form-control')
 }
 

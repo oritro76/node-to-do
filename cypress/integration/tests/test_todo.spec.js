@@ -22,7 +22,7 @@ describe("todo app", () => {
     })
 
     it('has one input form for adding todo text', () => {
-        toDoPage.getInputForm()
+        toDoPage.getTodoTextInputForm()
         .should('have.attr', 'type', 'text')
         .and('have.attr', 'placeholder', TODO_INPUT_PLACEHOLDER)
         .and('have.class', 'text-center')
@@ -33,16 +33,14 @@ describe("todo app", () => {
     })
 
     it('check correct number of todos are displayed', () => {
-        cy.wait('@getToDosAPI')
-        
-        toDoPage.getToDoCountLabel()
-        .should('have.css', 'background-color', LABEL_COLOR)
-        .then( () => {
-            let el = Cypress.$("input:checkbox")
-            let count = el.length
-            cy.get('.label').contains(count)
+        cy.wait('@getToDosAPI').then(interception => {
+            let response = interception.response.body
+            return response.length
+        }).then(count => {
+            toDoPage.getToDoCountLabel()
+            .should('have.css', 'background-color', LABEL_COLOR)
+            .and('contain', count)
         })
-
     })
     
 })
@@ -61,8 +59,8 @@ describe('Add to-dos', () => {
 
     it('adding one or more todos will display the todos and the count of todos', () => {
         cy.get('@testdata').then(testdata => {
-            testdata.forEach((toDo) => {
-                toDoPage.getInputForm().clear().type(toDo)
+            testdata.forEach(toDo => {
+                toDoPage.getTodoTextInputForm().clear().type(toDo)
 
                 toDoPage.getAddButton().contains('Add').click()
 
@@ -70,8 +68,6 @@ describe('Add to-dos', () => {
                     let response = interception.response.body
                     todoIDS.push(response[0]['_id'])
                 })
-
-                
 
                 toDoPage.getToDoTextLabel().contains(toDo)
                 
@@ -108,7 +104,7 @@ describe('remove to-dos', () => {
         cy.visit("/")
     }})
 
-    it('checking on to-dos remove the to-dos', () => {
+    it('checking on to-do checkboxes remove the to-dos', () => {
         toDoPage.getToDoCheckbox().then(($list) => {
             let temp = $list.length -1
             for(let count = temp; count >= 0; count--){
@@ -124,6 +120,8 @@ describe('remove to-dos', () => {
 
 describe("Visiting any other page returns 404", () => {
     it("Visiting any other page returns 404", () => {
-        cy.request({url:'/home', failOnStatusCode: false,}).its('status' ).should('be.equal', 404)
+        cy.request({url:'/home', failOnStatusCode: false,})
+        .its('status' )
+        .should('be.equal', 404)
     })
 })

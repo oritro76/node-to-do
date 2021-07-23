@@ -24,6 +24,13 @@ export function createTodoWithAPI(todoText){
     cy.request("POST", "/api/todos", {text: todoText}).its('status' ).should('be.equal', 200)
 }
 
+export function getTodoWithAPI(){
+
+    cy.request("GET", "/api/todos").its('status' ).should('be.equal', 200)
+}
+
+
+
 export function deleteTodoWithAPI(todoID){
     cy.request("DELETE", `/api/todos/${todoID}`).its('status' ).should('be.equal', 200)
 }
